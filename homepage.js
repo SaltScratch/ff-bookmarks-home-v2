@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const link = document.createElement('a');
             link.href = bookmarkItem.url;
             link.className = 'bookmark-link';
-            link.target = '_blank';
+            link.target = '_self';
 
             const favicon = document.createElement('img');
             favicon.className = 'bookmark-favicon';
