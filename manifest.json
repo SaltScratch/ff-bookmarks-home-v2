@@ -1,0 +1,25 @@
+{
+  "manifest_version": 2,
+  "name": "Bookmark Home Page",
+  "version": "1.0",
+  "description": "A Firefox extension that replaces the home page with a custom page displaying bookmarks.",
+  "permissions": [
+    "bookmarks",
+    "tabs",
+    "storage"
+  ],
+  "chrome_settings_overrides": {
+    "homepage": "homepage.html"
+  },
+  "chrome_url_overrides": {
+    "newtab": "homepage.html"
+  },
+  "icons": {
+    "48": "icons/icon-48.png",
+    "96": "icons/icon-96.png"
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  }
+}
