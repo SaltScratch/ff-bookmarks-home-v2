@@ -165,7 +165,7 @@ document.addEventListener('DOMContentLoaded', function() {
             header.className = 'folder-header';
 
             const folderTitle = document.createElement('h2');
-            folderTitle.textContent = bookmarkItem.title;
+            folderTitle.textContent = ' ' + bookmarkItem.title;
             header.appendChild(folderTitle);
 
             let folderContent;
@@ -185,7 +185,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     toggleButton.textContent = isCollapsed ? '−' : '+';
                     toggleButton.title = isCollapsed ? 'Collapse folder' : 'Expand folder';
                 });
-                header.insertBefore(toggleButton, folderTitle);
+                // header.insertBefore(toggleButton, folderTitle);
+                folderTitle.insertBefore(toggleButton, folderTitle.firstChild);
 
                 folderContent = document.createElement('div');
                 folderContent.className = 'folder-content';
