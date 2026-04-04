@@ -3,12 +3,13 @@
   "name": "Bookmark Home Page",
   "version": "1.0",
   "description": "A Firefox extension that replaces the home page with a custom page displaying bookmarks.",
-  "data_collection": {
-    "collection": "Bookmark URLs and titles from the user's Firefox bookmarks",
-    "purpose": "To display the user's bookmarks on the custom home page",
-    "collection_method": "Accessed via Firefox bookmarks API",
-    "retention_period": "Data is not stored; only displayed temporarily in the browser",
-    "disclosure": "Data is not shared with third parties"
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "@extension-without-data-collection",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
+    }
   },
   "permissions": [
     "bookmarks",
