@@ -15,6 +15,12 @@ body {
 }
 .page-header h1 {
     margin: 0;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    background: #fff;
+    opacity: 0.9;
+    color: navy;
+    padding: 12px 12px 12px;
     font-size: 26px;
 }
 #settings-button {
@@ -50,8 +56,13 @@ body {
 }
 .bookmark-folder h2 {
     margin: 0;
-    font-size: 24px;
-    text-shadow: 2px 2px 4px white;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    background: #fff;
+    opacity: 0.9;
+    color: navy;
+    padding: 12px 12px 12px;
+    font-size: 20px;
     text-align: center;
 }
 .folder-toggle-button {
@@ -85,13 +96,14 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 20px 12px 12px;
+    padding: 10px 10px 10px 10px;
     border: 1px solid #e0e0e0;
     border-radius: 12px;
     background: #fff;
-    opacity: 0.8;
+    opacity: 0.9;
     transition: background 0.15s ease, border-color 0.15s ease;
     min-height: 110px;
+    text-align: center;
 }
 .bookmark-item:hover {
     background: #f6faff;
@@ -126,6 +138,7 @@ body {
     -webkit-line-clamp: 2;
     line-clamp: 2;
     white-space: normal;
+    color: navy;
 }
 .edit-button,
 .delete-button {
