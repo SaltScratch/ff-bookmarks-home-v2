@@ -1,0 +1,31 @@
+name: Build Firefox Add-on
+
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install web-ext
+        run: npm install --global web-ext
+
+      - name: Build add-on
+        run: web-ext build --overwrite-dest
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: firefox-addon
+          path: "web-ext-artifact/*.zip"
