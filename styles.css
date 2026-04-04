@@ -12,17 +12,22 @@ body {
     justify-content: space-between;
     gap: 16px;
     margin-bottom: 20px;
+    padding: 12px 12px 12px 12px;
+}
+.time-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px 6px 12px;
+    font-size: 22px;
+    color: navy;
+    /* font-weight: 500; */
     border: 1px solid #e0e0e0;
     border-radius: 12px;
     background: #fff;
     opacity: 0.9;
-    padding: 0px 12px 0px 12px;
-}
-.page-header h1 {
-    margin: 0;
-    color: navy;
-    padding: 12px 12px 12px;
-    font-size: 26px;
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
 }
 #settings-button {
     border: 1px solid #007bff;
@@ -30,8 +35,9 @@ body {
     background: #007bff;
     color: white;
     cursor: pointer;
-    font-size: 14px;
-    padding: 6px 12px 6px 12px;
+    font-size: 22px;
+    padding: 3px 12px 6px 12px;
+    font-weight: bold;
 }
 #settings-button:hover {
     background: #0056cc;
@@ -60,6 +66,7 @@ body {
     padding: 12px 12px 12px;
     font-size: 20px;
     text-align: center;
+    font-weight: bold;
 }
 .folder-toggle-button {
     width: 32px;

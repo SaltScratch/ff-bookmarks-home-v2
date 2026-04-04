@@ -11,18 +11,36 @@ document.addEventListener('DOMContentLoaded', function() {
             window.open('options.html', '_blank');
         }
     });
+
+    // Time display
+    const timeContainer = document.querySelector('.time-container');
+    let timezone = 'Australia/Perth';
+    const updateTime = () => {
+        const now = new Date();
+        const options = {
+            timeZone: timezone,
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+        };
+        const timeString = now.toLocaleTimeString('en-AU', options);
+        timeContainer.textContent = `🕐 ${timeString}`;
+    };
+
     const defaultColumns = 5;
     let columnCount = defaultColumns;
 
     function getSettings() {
-        return browser.storage.local.get(['columnCount', 'rootFolder']).then(function(result) {
+        return browser.storage.local.get(['columnCount', 'rootFolder', 'timezone']).then(function(result) {
             const storedColumns = parseInt(result.columnCount, 10);
             columnCount = Number.isInteger(storedColumns) && storedColumns > 0 ? storedColumns : defaultColumns;
             rootFolder = result.rootFolder && result.rootFolder.trim() ? result.rootFolder.trim() : defaultRootFolder;
+            timezone = result.timezone && result.timezone.trim() ? result.timezone.trim() : 'Australia/Perth';
         }).catch(function(error) {
             console.error('Error loading settings:', error);
             columnCount = defaultColumns;
             rootFolder = defaultRootFolder;
+            timezone = 'Australia/Perth';
         });
     }
     function displayBookmarks(bookmarkItem, parentContainer, isRoot = false) {
@@ -225,6 +243,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     getSettings().then(function() {
+        updateTime();
+        setInterval(updateTime, 1000);
         return browser.bookmarks.getTree();
     }).then(function(bookmarkTree) {
         bookmarkTree.forEach(function(root) {
