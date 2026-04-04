@@ -42,14 +42,22 @@ document.addEventListener('DOMContentLoaded', function() {
             const favicon = document.createElement('img');
             favicon.className = 'bookmark-favicon';
             favicon.alt = '';
-            try {
-                const url = new URL(bookmarkItem.url);
-                favicon.src = `https://icons.duckduckgo.com/ip3/${url.hostname}.ico`;
-            } catch (e) {
-                favicon.style.display = 'none';
-            }
+            favicon.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNCIgZmlsbD0iI2NjYzRkZiIvPgo8cGF0aCBkPSJtMTYgNHYxNmg4VjE2SDE2VjR6IiBmaWxsPSIjZmZmZmZmIi8+Cjwvc3ZnPgo=';
+            browser.storage.local.get('customIcons').then(result => {
+                const icons = result.customIcons || {};
+                if (icons[bookmarkItem.id]) {
+                    favicon.src = icons[bookmarkItem.id];
+                } else {
+                    try {
+                        const url = new URL(bookmarkItem.url);
+                        favicon.src = `https://icons.duckduckgo.com/ip3/${url.hostname}.ico`;
+                    } catch (e) {
+                        // keep default
+                    }
+                }
+            });
             favicon.onerror = function() {
-                favicon.style.display = 'none';
+                this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNCIgZmlsbD0iI2NjYzRkZiIvPgo8cGF0aCBkPSJtMTYgNHYxNmg4VjE2SDE2VjR6IiBmaWxsPSIjZmZmZmZmIi8+Cjwvc3ZnPgo=';
             };
 
             const titleSpan = document.createElement('span');
@@ -116,6 +124,37 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             });
             item.appendChild(deleteButton);
+
+            const setIconButton = document.createElement('button');
+            setIconButton.type = 'button';
+            setIconButton.className = 'set-icon-button';
+            setIconButton.textContent = '⬆';
+            setIconButton.title = 'Set custom icon';
+            setIconButton.addEventListener('click', function(event) {
+                event.stopPropagation();
+                event.preventDefault();
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'image/*';
+                input.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(event) {
+                            const base64 = event.target.result;
+                            browser.storage.local.get('customIcons').then(result => {
+                                const icons = result.customIcons || {};
+                                icons[bookmarkItem.id] = base64;
+                                browser.storage.local.set({ customIcons: icons });
+                                favicon.src = base64;
+                            });
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+                input.click();
+            });
+            item.appendChild(setIconButton);
             targetContainer.appendChild(item);
         } else if (bookmarkItem.children && bookmarkItem.children.length > 0) {
             // It's a folder
