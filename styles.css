@@ -16,18 +16,22 @@ body {
     border-radius: 12px;
     background: #fff;
     opacity: 0.9;
+    padding: 0px 12px 0px 12px;
+}
+.page-header h1 {
+    margin: 0;
     color: navy;
     padding: 12px 12px 12px;
     font-size: 26px;
 }
 #settings-button {
-    padding: 8px 14px;
     border: 1px solid #007bff;
     border-radius: 8px;
     background: #007bff;
     color: white;
     cursor: pointer;
     font-size: 14px;
+    padding: 6px 12px 6px 12px;
 }
 #settings-button:hover {
     background: #0056cc;
@@ -47,7 +51,7 @@ body {
     margin-bottom: 12px;
 }
 .bookmark-folder h2 {
-    display: inherit;
+    margin: 0;
     border: 1px solid #e0e0e0;
     border-radius: 12px;
     background: #fff;
