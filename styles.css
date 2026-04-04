@@ -15,18 +15,12 @@ body {
     padding: 12px 12px 12px 12px;
 }
 .time-container {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 12px 6px 12px;
-    font-size: 22px;
+    border: 1px solid #007bff;
+    border-radius: 8px;
+    background: white;
     color: navy;
-    /* font-weight: 500; */
-    border: 1px solid #e0e0e0;
-    border-radius: 12px;
-    background: #fff;
-    opacity: 0.9;
-    font-family: 'Courier New', monospace;
+    font-size: 22px;
+    padding: 6px 12px 6px 12px;
     font-weight: bold;
 }
 #settings-button {
@@ -124,8 +118,8 @@ body {
     text-decoration: none;
 }
 .bookmark-favicon {
-    width: 32px;
-    height: 32px;
+    width: 40px;
+    height: 40px;
     margin-bottom: 10px;
     border-radius: 6px;
     object-fit: contain;

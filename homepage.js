@@ -209,9 +209,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 folderContent = document.createElement('div');
                 folderContent.className = 'folder-content';
                 folderContent.style.display = 'none';
+                folderDiv.appendChild(header);
             }
 
-            folderDiv.appendChild(header);
             folderDiv.appendChild(folderContent);
             targetContainer.appendChild(folderDiv);
 
