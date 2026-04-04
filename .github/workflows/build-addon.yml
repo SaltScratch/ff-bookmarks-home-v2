@@ -28,4 +28,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: firefox-addon
-          path: "web-ext-artifact/*.zip"
+          path: "web-ext-artifacts/*.zip"
