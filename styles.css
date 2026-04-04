@@ -12,9 +12,6 @@ body {
     justify-content: space-between;
     gap: 16px;
     margin-bottom: 20px;
-}
-.page-header h1 {
-    margin: 0;
     border: 1px solid #e0e0e0;
     border-radius: 12px;
     background: #fff;
@@ -36,26 +33,21 @@ body {
     background: #0056cc;
 }
 .bookmark-folder {
-    margin-bottom: 30px;
     border-top: 1px solid #e5e7eb;
-    padding-top: 20px;
+    padding-top: 10px;
 }
 .bookmark-folder:first-child {
     border-top: none;
     padding-top: 0;
 }
-.bookmark-folder + .bookmark-folder {
-    margin-top: 28px;
-}
 .folder-header {
-    display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
     margin-bottom: 12px;
 }
 .bookmark-folder h2 {
-    margin: 0;
+    display: inherit;
     border: 1px solid #e0e0e0;
     border-radius: 12px;
     background: #fff;
@@ -83,7 +75,6 @@ body {
     background: #0056cc;
 }
 .folder-content {
-    margin-left: 10px;
     margin-top: 8px;
 }
 .bookmark-grid {
