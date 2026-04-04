@@ -5,7 +5,7 @@
   "description": "A Firefox extension that replaces the home page with a custom page displaying bookmarks.",
   "browser_specific_settings": {
     "gecko": {
-      "id": "@extension-without-data-collection",
+      "id": "@firefox-bookmark-homepage",
       "data_collection_permissions": {
         "required": ["none"]
       }
