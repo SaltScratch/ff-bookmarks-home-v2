@@ -51,8 +51,8 @@ body {
     padding-top: 0;
 }
 .folder-header {
-    align-items: center;
-    justify-content: center;
+    align-items: left;
+    justify-content: left;
     gap: 10px;
     margin-bottom: 12px;
 }
@@ -65,7 +65,7 @@ body {
     color: navy;
     padding: 12px 12px 12px;
     font-size: 20px;
-    text-align: center;
+    text-align: left;
     font-weight: bold;
 }
 .folder-toggle-button {
