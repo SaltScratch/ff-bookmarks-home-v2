@@ -4,6 +4,10 @@ This extension replaces your Firefox home page with a custom page that displays 
 
 ## Installation
 
+The easiest way to install this addon is to go to https://addons.mozilla.org/en-US/firefox/addon/bookmark-home-page/ and get it from there.
+
+If you want to install it yourself from the source, check out this repo and then -
+
 1. Open Firefox.
 2. Go to `about:debugging`.
 3. Click on "This Firefox" in the left sidebar.
@@ -15,16 +19,6 @@ This extension replaces your Firefox home page with a custom page that displays 
 
 - The extension will set your home page to display your bookmarks.
 - Bookmarks are organized by folders.
-- Click on any bookmark to open it in a new tab.
-
-## Files
-
-- `manifest.json`: Extension manifest.
-- `homepage.html`: The HTML for the home page.
-- `homepage.js`: JavaScript to fetch and display bookmarks.
-- `icons/`: Directory for extension icons (you need to add icon-48.png and icon-96.png).
-
-## Notes
-
-- Add your own icons to the `icons/` folder.
-- This is a temporary extension; for permanent installation, package it as an XPI file.
+- Click on any bookmark to open it.
+- Settings page allows you to specify the name of the root folder (defaults to 'Speed Dial') and the number of columns to display bookmarks in
+- you can delete bookmarks as well as edit the bookmark title
