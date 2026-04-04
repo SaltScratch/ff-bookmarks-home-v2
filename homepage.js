@@ -203,7 +203,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     toggleButton.textContent = isCollapsed ? '−' : '+';
                     toggleButton.title = isCollapsed ? 'Collapse folder' : 'Expand folder';
                 });
-                // header.insertBefore(toggleButton, folderTitle);
                 folderTitle.insertBefore(toggleButton, folderTitle.firstChild);
 
                 folderContent = document.createElement('div');

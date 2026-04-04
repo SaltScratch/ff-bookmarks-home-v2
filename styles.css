@@ -37,7 +37,6 @@ body {
     background: #0056cc;
 }
 .bookmark-folder {
-    border-top: 1px solid #e5e7eb;
     padding-top: 10px;
 }
 .bookmark-folder:first-child {
@@ -45,14 +44,15 @@ body {
     padding-top: 0;
 }
 .folder-header {
+    display: flex;
     align-items: left;
     justify-content: left;
     gap: 10px;
-    margin-bottom: 12px;
+    margin-top: 12px;
 }
 .bookmark-folder h2 {
     margin: 0;
-    border: 1px solid #e0e0e0;
+    width: 12%;
     border-radius: 12px;
     background: #fff;
     opacity: 0.9;
