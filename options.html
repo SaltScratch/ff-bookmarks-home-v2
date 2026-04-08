@@ -5,45 +5,86 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bookmark Home Settings</title>
     <style>
+        * { box-sizing: border-box; }
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            margin: 40px;
+            background: #1a1a2e;
+            color: #fff;
+        }
+        h1 {
+            color: #fff;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+            margin-bottom: 24px;
         }
         label {
             display: block;
-            margin-bottom: 10px;
+            margin-bottom: 6px;
+            font-weight: bold;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
         }
-        input {
-            width: 80px;
-            padding: 8px;
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 220px;
+            padding: 8px 12px;
             margin-bottom: 20px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(30, 30, 50, 0.6);
+            backdrop-filter: blur(4px);
+            color: #fff;
+            font-size: 14px;
+        }
+        input[type="text"]::placeholder,
+        input[type="number"]::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #007bff;
+            cursor: pointer;
         }
         button {
-            padding: 8px 16px;
-            background-color: #007bff;
-            color: white;
+            padding: 10px 24px;
+            background: rgba(30, 30, 50, 0.6);
+            backdrop-filter: blur(4px);
+            color: #fff;
+            font-size: 14px;
+            font-weight: bold;
             border: none;
+            border-radius: 8px;
             cursor: pointer;
-            border-radius: 4px;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+            transition: background 0.15s ease;
         }
         button:hover {
-            background-color: #0056b3;
+            background: rgba(60, 60, 90, 0.8);
         }
         #status {
             margin-top: 12px;
-            color: green;
+            color: #8f8;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
         }
     </style>
 </head>
 <body>
     <h1>Bookmark Home Settings</h1>
-    <label for="root-folder">Root folder name:</label>
-    <input id="root-folder" type="text" placeholder="Speed Dial" />
-    <label for="column-count">Number of columns:</label>
-    <input id="column-count" type="number" min="1" max="10" step="1" />
+    <label for="root-folder">Root folder:</label>
+    <select id="root-folder"></select>
     <label for="timezone">Timezone:</label>
-    <input id="timezone" type="text" placeholder="Australia/Perth" style="width: 200px;" />
+    <input id="timezone" type="text" list="timezone-list" placeholder="Search timezone…" />
+    <datalist id="timezone-list"></datalist>
+    <label for="weather-city">Weather city:</label>
+    <input id="weather-city" type="text" list="city-list" placeholder="Search city…" />
+    <datalist id="city-list"></datalist>
+    <label style="display: flex; align-items: center; gap: 8px; margin-top: 12px;">
+        <input id="hide-sidebar" type="checkbox" />
+        <span style="font-weight: bold; text-shadow: 0 1px 4px rgba(0,0,0,0.5);">Hide sidebar</span>
+    </label>
     <button id="save">Save</button>
+    <button id="back-to-home">← Back to Home</button>
     <div id="status"></div>
     <script src="options.js"></script>
 </body>

@@ -20,5 +20,5 @@ If you want to install it yourself from the source, check out this repo and then
 - The extension will set your home page to display your bookmarks.
 - Bookmarks are organized by folders.
 - Click on any bookmark to open it.
-- Settings page allows you to specify the name of the root folder (defaults to 'Speed Dial') and the number of columns to display bookmarks in
-- you can delete bookmarks as well as edit the bookmark title
+- Settings page allows you to specify the name of the root folder (defaults to 'Speed Dial'), the timezone and the city for weather display. You can also hide the folder tree sidebar
+- you can delete bookmarks as well as edit the bookmark title and upload custom icons
