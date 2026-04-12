@@ -237,7 +237,11 @@ document.addEventListener('DOMContentLoaded', function() {
         isSidebarVisible = !hideSidebar;
         var icon = isSidebarVisible ? '✕' : '☰';
         sidebarToggleButton.className = isSidebarVisible ? 'hide' : 'show';
-        sidebarToggleButton.innerHTML = '<span>' + icon + '</span>';
+        var span = sidebarToggleButton.querySelector('span') || document.createElement('span');
+        span.textContent = icon;
+        if (!sidebarToggleButton.querySelector('span')) {
+            sidebarToggleButton.appendChild(span);
+        }
         sidebarToggleButton.title = isSidebarVisible ? 'Hide sidebar' : 'Show sidebar';
         if (currentFolder) {
             showBookmarksForFolder(currentFolder, currentPathStack);
