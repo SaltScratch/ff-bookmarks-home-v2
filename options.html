@@ -4,70 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bookmark Home Settings</title>
-    <style>
-        * { box-sizing: border-box; }
-        body {
-            font-family: Arial, sans-serif;
-            margin: 40px;
-            background: #1a1a2e;
-            color: #fff;
-        }
-        h1 {
-            color: #fff;
-            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
-            margin-bottom: 24px;
-        }
-        label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: bold;
-            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
-        }
-        input[type="text"],
-        input[type="number"],
-        select {
-            width: 220px;
-            padding: 8px 12px;
-            margin-bottom: 20px;
-            border: none;
-            border-radius: 8px;
-            background: rgba(30, 30, 50, 0.6);
-            backdrop-filter: blur(4px);
-            color: #fff;
-            font-size: 14px;
-        }
-        input[type="text"]::placeholder,
-        input[type="number"]::placeholder {
-            color: rgba(255, 255, 255, 0.5);
-        }
-        input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            accent-color: #007bff;
-            cursor: pointer;
-        }
-        button {
-            padding: 10px 24px;
-            background: rgba(30, 30, 50, 0.6);
-            backdrop-filter: blur(4px);
-            color: #fff;
-            font-size: 14px;
-            font-weight: bold;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
-            transition: background 0.15s ease;
-        }
-        button:hover {
-            background: rgba(60, 60, 90, 0.8);
-        }
-        #status {
-            margin-top: 12px;
-            color: #8f8;
-            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
-        }
-    </style>
+    <link rel="stylesheet" href="options.css">
 </head>
 <body>
     <h1>Bookmark Home Settings</h1>
@@ -77,12 +14,11 @@
     <input id="timezone" type="text" list="timezone-list" placeholder="Search timezone…" />
     <datalist id="timezone-list"></datalist>
     <label for="weather-city">Weather city:</label>
-    <input id="weather-city" type="text" list="city-list" placeholder="Search city…" />
-    <datalist id="city-list"></datalist>
-    <label style="display: flex; align-items: center; gap: 8px; margin-top: 12px;">
-        <input id="hide-sidebar" type="checkbox" />
-        <span style="font-weight: bold; text-shadow: 0 1px 4px rgba(0,0,0,0.5);">Hide sidebar</span>
-    </label>
+    <div class="city-search-wrapper">
+        <input id="weather-city" type="text" placeholder="Search city…" autocomplete="off" />
+        <button id="clear-city" type="button" title="Clear city">✕</button>
+        <div id="city-search-results" class="city-search-results"></div>
+    </div>
     <button id="save">Save</button>
     <button id="back-to-home">← Back to Home</button>
     <div id="status"></div>

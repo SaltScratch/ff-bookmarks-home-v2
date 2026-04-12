@@ -2,13 +2,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const rootFolderSelect = document.getElementById('root-folder');
     const timezoneInput = document.getElementById('timezone');
     const weatherCityInput = document.getElementById('weather-city');
-    const hideSidebarCheckbox = document.getElementById('hide-sidebar');
+    const citySearchResults = document.getElementById('city-search-results');
+    const clearCityButton = document.getElementById('clear-city');
     const saveButton = document.getElementById('save');
     const backToHomeButton = document.getElementById('back-to-home');
     const status = document.getElementById('status');
     const defaultRootFolder = 'Speed Dial';
     const defaultTimezone = 'Australia/Perth';
     const defaultWeatherCity = 'Perth';
+
+    let searchTimeout = null;
 
     // Common IANA timezones
     const timezones = [
@@ -55,46 +58,6 @@ document.addEventListener('DOMContentLoaded', function() {
         timezoneDatalist.appendChild(opt);
     });
 
-    // Populate city datalist
-    const cities = [
-        'Abu Dhabi', 'Abuja', 'Accra', 'Addis Ababa', 'Adelaide', 'Algiers',
-        'Almaty', 'Amman', 'Amsterdam', 'Anchorage', 'Ankara', 'Athens',
-        'Atlanta', 'Auckland', 'Baghdad', 'Bangkok', 'Bangalore', 'Barcelona',
-        'Beijing', 'Beirut', 'Belgrade', 'Berlin', 'Bogota', 'Boston',
-        'Brasilia', 'Bratislava', 'Brisbane', 'Brussels', 'Bucharest', 'Budapest',
-        'Buenos Aires', 'Cairo', 'Calgary', 'Cape Town', 'Caracas', 'Casablanca',
-        'Chennai', 'Chengdu', 'Chicago', 'Christchurch', 'Colombo', 'Copenhagen',
-        'Dakar', 'Dallas', 'Dar es Salaam', 'Darwin', 'Delhi', 'Denver',
-        'Detroit', 'Dhaka', 'Doha', 'Dubai', 'Dublin', 'Durban',
-        'Edinburgh', 'Edmonton', 'Frankfurt', 'Gaza', 'Geneva', 'Guangzhou',
-        'Guatemala City', 'Hanoi', 'Havana', 'Helsinki', 'Ho Chi Minh City',
-        'Hong Kong', 'Honolulu', 'Houston', 'Islamabad', 'Istanbul', 'Jakarta',
-        'Jeddah', 'Jerusalem', 'Johannesburg', 'Kabul', 'Karachi', 'Kathmandu',
-        'Khartoum', 'Kigali', 'Kingston', 'Kinshasa', 'Kolkata', 'Kuala Lumpur',
-        'Kuwait City', 'Kyiv', 'Lagos', 'Lahore', 'La Paz', 'Lima',
-        'Lisbon', 'Ljubljana', 'London', 'Los Angeles', 'Luanda', 'Luxembourg',
-        'Lyon', 'Madrid', 'Manila', 'Maputo', 'Marrakech', 'Melbourne',
-        'Mexico City', 'Miami', 'Milan', 'Minneapolis', 'Minsk', 'Montreal',
-        'Moscow', 'Mumbai', 'Munich', 'Muscat', 'Nairobi', 'New Orleans',
-        'New York', 'Osaka', 'Oslo', 'Ottawa', 'Paris', 'Perth',
-        'Phnom Penh', 'Phoenix', 'Port Moresby', 'Prague', 'Pretoria', 'Quito',
-        'Rabat', 'Reykjavik', 'Riga', 'Rio de Janeiro', 'Riyadh', 'Rome',
-        'San Francisco', 'San Jose', 'San Juan', 'San Salvador', 'Sanaa',
-        'Santiago', 'Santo Domingo', 'Sao Paulo', 'Sarajevo', 'Seattle', 'Seoul',
-        'Shanghai', 'Shenzhen', 'Singapore', 'Skopje', 'Sofia', 'Stockholm',
-        'Suva', 'Sydney', 'Taipei', 'Tallinn', 'Tashkent', 'Tbilisi',
-        'Tehran', 'Tel Aviv', 'The Hague', 'Tirana', 'Tokyo', 'Toronto',
-        'Toulouse', 'Tripoli', 'Tunis', 'Ulaanbaatar', 'Vancouver', 'Vatican City',
-        'Venice', 'Vienna', 'Vientiane', 'Vilnius', 'Warsaw', 'Washington DC',
-        'Wellington', 'Yangon', 'Yaounde', 'Yerevan', 'Zagreb', 'Zurich'
-    ];
-    const cityDatalist = document.getElementById('city-list');
-    cities.forEach(function(name) {
-        const opt = document.createElement('option');
-        opt.value = name;
-        cityDatalist.appendChild(opt);
-    });
-
     browser.bookmarks.getTree().then(function(tree) {
         const folderSet = new Set();
         tree.forEach(function(root) {
@@ -113,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function() {
             rootFolderSelect.appendChild(opt);
         });
 
-        browser.storage.local.get(['rootFolder', 'timezone', 'hideSidebar', 'city']).then(function(result) {
+        browser.storage.local.get(['rootFolder', 'timezone', 'city', 'weatherLat', 'weatherLon']).then(function(result) {
             const savedFolder = result.rootFolder || defaultRootFolder;
             rootFolderSelect.value = savedFolder;
             if (!rootFolderSelect.value && rootFolderSelect.options.length > 0) {
@@ -121,20 +84,92 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             timezoneInput.value = result.timezone || defaultTimezone;
             weatherCityInput.value = result.city || defaultWeatherCity;
-            hideSidebarCheckbox.checked = !!result.hideSidebar;
+            weatherCityInput.dataset.lat = result.weatherLat || '';
+            weatherCityInput.dataset.lon = result.weatherLon || '';
+            clearCityButton.classList.toggle('visible', weatherCityInput.value.length > 0);
         });
     }).catch(function(error) {
         console.error('Error loading folders:', error);
         timezoneInput.value = defaultTimezone;
-        hideSidebarCheckbox.checked = false;
     });
+
+    // Live city search
+    weatherCityInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        var query = weatherCityInput.value.trim();
+        clearCityButton.classList.toggle('visible', query.length > 0);
+        if (query.length < 2) {
+            citySearchResults.classList.remove('open');
+            citySearchResults.innerHTML = '';
+            return;
+        }
+        searchTimeout = setTimeout(function() {
+            searchCities(query);
+        }, 300);
+    });
+
+    clearCityButton.addEventListener('click', function() {
+        weatherCityInput.value = '';
+        delete weatherCityInput.dataset.lat;
+        delete weatherCityInput.dataset.lon;
+        clearCityButton.classList.remove('visible');
+        citySearchResults.classList.remove('open');
+        citySearchResults.innerHTML = '';
+        weatherCityInput.focus();
+    });
+
+    weatherCityInput.addEventListener('blur', function() {
+        setTimeout(function() {
+            citySearchResults.classList.remove('open');
+            citySearchResults.innerHTML = '';
+        }, 200);
+    });
+
+    function searchCities(query) {
+        var url = 'https://geocoding-api.open-meteo.com/v1/search?name=' + encodeURIComponent(query) + '&count=10';
+        fetch(url)
+            .then(function(response) { return response.json(); })
+            .then(function(data) {
+                citySearchResults.innerHTML = '';
+                if (!data.results || data.results.length === 0) {
+                    citySearchResults.classList.remove('open');
+                    return;
+                }
+                data.results.forEach(function(result) {
+                    var item = document.createElement('div');
+                    item.className = 'city-search-result-item';
+                    var name = result.name;
+                    if (result.admin1) name += ', ' + result.admin1;
+                    if (result.country) name += ', ' + result.country;
+                    item.textContent = name;
+                    item.addEventListener('mousedown', function(e) {
+                        e.preventDefault();
+                        var fullName = result.name;
+                        if (result.admin1) fullName += ', ' + result.admin1;
+                        if (result.country) fullName += ', ' + result.country;
+                        weatherCityInput.value = fullName;
+                        weatherCityInput.dataset.lat = result.latitude;
+                        weatherCityInput.dataset.lon = result.longitude;
+                        citySearchResults.classList.remove('open');
+                        citySearchResults.innerHTML = '';
+                    });
+                    citySearchResults.appendChild(item);
+                });
+                citySearchResults.classList.add('open');
+            })
+            .catch(function(error) {
+                console.error('Error searching cities:', error);
+                citySearchResults.classList.remove('open');
+            });
+    }
 
     saveButton.addEventListener('click', function() {
         const rootFolder = rootFolderSelect.value.trim() || defaultRootFolder;
         const timezone = timezoneInput.value.trim() || defaultTimezone;
-        const weatherCity = weatherCityInput.value.trim() || defaultWeatherCity;
-        const hideSidebar = hideSidebarCheckbox.checked;
-        browser.storage.local.set({ rootFolder: rootFolder, timezone: timezone, city: weatherCity, hideSidebar: hideSidebar }).then(function() {
+        const weatherCity = weatherCityInput.value.trim();
+        const weatherLat = weatherCity ? (weatherCityInput.dataset.lat || '') : '';
+        const weatherLon = weatherCity ? (weatherCityInput.dataset.lon || '') : '';
+        browser.storage.local.set({ rootFolder: rootFolder, timezone: timezone, city: weatherCity || defaultWeatherCity, weatherLat: weatherLat, weatherLon: weatherLon }).then(function() {
             status.textContent = 'Saved.';
             setTimeout(function() {
                 status.textContent = '';

@@ -38,7 +38,7 @@ body {
 /* ---------- Weather display ---------- */
 .weather-container {
     position: absolute;
-    left: 12px;
+    left: 68px;
     border-radius: 8px;
     background: rgba(30, 30, 50, 0.6);
     backdrop-filter: blur(4px);
@@ -52,6 +52,42 @@ body {
     display: flex;
     align-items: center;
     box-sizing: border-box;
+}
+
+/* ---------- Sidebar toggle button ---------- */
+#sidebar-toggle-button {
+    position: absolute;
+    left: 12px;
+    border: none;
+    border-radius: 8px;
+    background: rgba(30, 30, 50, 0.6);
+    backdrop-filter: blur(4px);
+    color: #fff;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+    transition: background 0.15s ease;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+#sidebar-toggle-button span {
+    display: inline-block;
+}
+#sidebar-toggle-button.show span {
+    transform: translateY(-3px);
+}
+#sidebar-toggle-button.hide span {
+    transform: translateY(-1px);
+}
+#sidebar-toggle-button:hover {
+    background: rgba(60, 60, 90, 0.8);
 }
 
 /* ---------- Settings button ---------- */
@@ -227,6 +263,20 @@ body {
     padding: 6px;
     background: transparent;
     text-align: center;
+    cursor: grab;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+}
+.bookmark-item:active {
+    cursor: grabbing;
+}
+.bookmark-item.dragging {
+    opacity: 0.4;
+    transform: scale(0.95);
+}
+.bookmark-item.drag-over {
+    outline: 2px dashed rgba(0, 123, 255, 0.8);
+    outline-offset: 2px;
+    border-radius: 6px;
 }
 
 /* ---------- Bookmark link ---------- */

@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const folderTree = document.getElementById('folder-tree');
     const bookmarksContainer = document.getElementById('bookmarks-container');
     const settingsButton = document.getElementById('settings-button');
+    const sidebarToggleButton = document.getElementById('sidebar-toggle-button');
     const timeContainer = document.querySelector('.time-container');
     const weatherContainer = document.getElementById('weather');
 
@@ -16,191 +17,15 @@ document.addEventListener('DOMContentLoaded', function() {
     let rootFolder = DEFAULT_ROOT_FOLDER;
     let timezone = DEFAULT_TIMEZONE;
     let city = DEFAULT_CITY;
+    let weatherLat = '';
+    let weatherLon = '';
+    let isSidebarVisible = true;
+    let currentFolder = null;
+    let currentPathStack = [];
 
     // ========================================================================
     // Weather
     // ========================================================================
-    const CITY_COORDS = {
-        'Abu Dhabi': { lat: 24.45, lon: 54.65 },
-        'Abuja': { lat: 9.06, lon: 7.49 },
-        'Accra': { lat: 5.60, lon: -0.19 },
-        'Addis Ababa': { lat: 9.03, lon: 38.74 },
-        'Adelaide': { lat: -34.93, lon: 138.60 },
-        'Algiers': { lat: 36.75, lon: 3.06 },
-        'Almaty': { lat: 43.22, lon: 76.85 },
-        'Amman': { lat: 31.95, lon: 35.93 },
-        'Amsterdam': { lat: 52.37, lon: 4.90 },
-        'Anchorage': { lat: 61.22, lon: -149.90 },
-        'Ankara': { lat: 39.93, lon: 32.85 },
-        'Athens': { lat: 37.98, lon: 23.73 },
-        'Atlanta': { lat: 33.75, lon: -84.39 },
-        'Auckland': { lat: -36.85, lon: 174.76 },
-        'Baghdad': { lat: 33.31, lon: 44.37 },
-        'Bangkok': { lat: 13.76, lon: 100.50 },
-        'Bangalore': { lat: 12.97, lon: 77.59 },
-        'Barcelona': { lat: 41.39, lon: 2.17 },
-        'Beijing': { lat: 39.90, lon: 116.40 },
-        'Beirut': { lat: 33.89, lon: 35.50 },
-        'Belgrade': { lat: 44.79, lon: 20.47 },
-        'Berlin': { lat: 52.52, lon: 13.41 },
-        'Bogota': { lat: 4.71, lon: -74.07 },
-        'Boston': { lat: 42.36, lon: -71.06 },
-        'Brasilia': { lat: -15.79, lon: -47.88 },
-        'Bratislava': { lat: 48.15, lon: 17.11 },
-        'Brisbane': { lat: -27.47, lon: 153.03 },
-        'Brussels': { lat: 50.85, lon: 4.35 },
-        'Bucharest': { lat: 44.43, lon: 26.10 },
-        'Budapest': { lat: 47.50, lon: 19.04 },
-        'Buenos Aires': { lat: -34.60, lon: -58.38 },
-        'Cairo': { lat: 30.04, lon: 31.24 },
-        'Calgary': { lat: 51.05, lon: -114.07 },
-        'Cape Town': { lat: -33.92, lon: 18.42 },
-        'Caracas': { lat: 10.49, lon: -66.88 },
-        'Casablanca': { lat: 33.57, lon: -7.59 },
-        'Chennai': { lat: 13.08, lon: 80.27 },
-        'Chengdu': { lat: 30.57, lon: 104.07 },
-        'Chicago': { lat: 41.88, lon: -87.63 },
-        'Christchurch': { lat: -43.53, lon: 172.64 },
-        'Colombo': { lat: 6.93, lon: 79.85 },
-        'Copenhagen': { lat: 55.68, lon: 12.57 },
-        'Dakar': { lat: 14.69, lon: -17.44 },
-        'Dallas': { lat: 32.78, lon: -96.80 },
-        'Dar es Salaam': { lat: -6.79, lon: 39.28 },
-        'Darwin': { lat: -12.46, lon: 130.84 },
-        'Delhi': { lat: 28.61, lon: 77.21 },
-        'Denver': { lat: 39.74, lon: -104.99 },
-        'Detroit': { lat: 42.33, lon: -83.05 },
-        'Dhaka': { lat: 23.81, lon: 90.41 },
-        'Doha': { lat: 25.29, lon: 51.53 },
-        'Dubai': { lat: 25.20, lon: 55.27 },
-        'Dublin': { lat: 53.35, lon: -6.26 },
-        'Durban': { lat: -29.86, lon: 31.02 },
-        'Edinburgh': { lat: 55.95, lon: -3.19 },
-        'Edmonton': { lat: 53.55, lon: -113.49 },
-        'Frankfurt': { lat: 50.11, lon: 8.68 },
-        'Gaza': { lat: 31.50, lon: 34.47 },
-        'Geneva': { lat: 46.20, lon: 6.15 },
-        'Guangzhou': { lat: 23.13, lon: 113.26 },
-        'Guatemala City': { lat: 14.63, lon: -90.51 },
-        'Hanoi': { lat: 21.03, lon: 105.85 },
-        'Havana': { lat: 23.11, lon: -82.37 },
-        'Helsinki': { lat: 60.17, lon: 24.94 },
-        'Ho Chi Minh City': { lat: 10.82, lon: 106.63 },
-        'Hong Kong': { lat: 22.32, lon: 114.17 },
-        'Honolulu': { lat: 21.31, lon: -157.86 },
-        'Houston': { lat: 29.76, lon: -95.37 },
-        'Islamabad': { lat: 33.69, lon: 73.04 },
-        'Istanbul': { lat: 41.01, lon: 28.98 },
-        'Jakarta': { lat: -6.21, lon: 106.85 },
-        'Jeddah': { lat: 21.49, lon: 39.19 },
-        'Jerusalem': { lat: 31.77, lon: 35.23 },
-        'Johannesburg': { lat: -26.20, lon: 28.05 },
-        'Kabul': { lat: 34.53, lon: 69.17 },
-        'Karachi': { lat: 24.86, lon: 67.01 },
-        'Kathmandu': { lat: 27.72, lon: 85.32 },
-        'Khartoum': { lat: 15.60, lon: 32.53 },
-        'Kigali': { lat: -1.94, lon: 29.87 },
-        'Kingston': { lat: 18.00, lon: -76.78 },
-        'Kinshasa': { lat: -4.44, lon: 15.27 },
-        'Kolkata': { lat: 22.57, lon: 88.36 },
-        'Kuala Lumpur': { lat: 3.14, lon: 101.69 },
-        'Kuwait City': { lat: 29.38, lon: 47.99 },
-        'Kyiv': { lat: 50.45, lon: 30.52 },
-        'Lagos': { lat: 6.52, lon: 3.38 },
-        'Lahore': { lat: 31.52, lon: 74.36 },
-        'La Paz': { lat: -16.50, lon: -68.15 },
-        'Lima': { lat: -12.05, lon: -77.04 },
-        'Lisbon': { lat: 38.72, lon: -9.14 },
-        'Ljubljana': { lat: 46.06, lon: 14.51 },
-        'London': { lat: 51.51, lon: -0.13 },
-        'Los Angeles': { lat: 34.05, lon: -118.24 },
-        'Luanda': { lat: -8.84, lon: 13.23 },
-        'Luxembourg': { lat: 49.61, lon: 6.13 },
-        'Lyon': { lat: 45.76, lon: 4.83 },
-        'Madrid': { lat: 40.42, lon: -3.70 },
-        'Manila': { lat: 14.60, lon: 120.98 },
-        'Maputo': { lat: -25.97, lon: 32.58 },
-        'Marrakech': { lat: 31.63, lon: -8.01 },
-        'Melbourne': { lat: -37.81, lon: 144.96 },
-        'Mexico City': { lat: 19.43, lon: -99.13 },
-        'Miami': { lat: 25.76, lon: -80.19 },
-        'Milan': { lat: 45.46, lon: 9.19 },
-        'Minneapolis': { lat: 44.98, lon: -93.27 },
-        'Minsk': { lat: 53.90, lon: 27.56 },
-        'Montreal': { lat: 45.50, lon: -73.57 },
-        'Moscow': { lat: 55.76, lon: 37.62 },
-        'Mumbai': { lat: 19.08, lon: 72.88 },
-        'Munich': { lat: 48.14, lon: 11.58 },
-        'Muscat': { lat: 23.59, lon: 58.54 },
-        'Nairobi': { lat: -1.29, lon: 36.82 },
-        'New Orleans': { lat: 29.95, lon: -90.07 },
-        'New York': { lat: 40.71, lon: -74.01 },
-        'Osaka': { lat: 34.69, lon: 135.50 },
-        'Oslo': { lat: 59.91, lon: 10.75 },
-        'Ottawa': { lat: 45.42, lon: -75.70 },
-        'Paris': { lat: 48.86, lon: 2.35 },
-        'Perth': { lat: -31.95, lon: 115.86 },
-        'Phnom Penh': { lat: 11.55, lon: 104.92 },
-        'Phoenix': { lat: 33.45, lon: -112.07 },
-        'Port Moresby': { lat: -9.44, lon: 147.18 },
-        'Prague': { lat: 50.08, lon: 14.43 },
-        'Pretoria': { lat: -25.75, lon: 28.19 },
-        'Quito': { lat: -0.18, lon: -78.47 },
-        'Rabat': { lat: 34.02, lon: -6.84 },
-        'Reykjavik': { lat: 64.15, lon: -21.94 },
-        'Riga': { lat: 56.95, lon: 24.11 },
-        'Rio de Janeiro': { lat: -22.91, lon: -43.17 },
-        'Riyadh': { lat: 24.71, lon: 46.68 },
-        'Rome': { lat: 41.90, lon: 12.50 },
-        'San Francisco': { lat: 37.77, lon: -122.42 },
-        'San Jose': { lat: 37.34, lon: -121.89 },
-        'San Juan': { lat: 18.47, lon: -66.12 },
-        'San Salvador': { lat: 13.69, lon: -89.22 },
-        'Sanaa': { lat: 15.37, lon: 44.19 },
-        'Santiago': { lat: -33.45, lon: -70.67 },
-        'Santo Domingo': { lat: 18.49, lon: -69.94 },
-        'Sao Paulo': { lat: -23.55, lon: -46.63 },
-        'Sarajevo': { lat: 43.86, lon: 18.41 },
-        'Seattle': { lat: 47.61, lon: -122.33 },
-        'Seoul': { lat: 37.57, lon: 126.98 },
-        'Shanghai': { lat: 31.23, lon: 121.47 },
-        'Shenzhen': { lat: 22.54, lon: 114.06 },
-        'Singapore': { lat: 1.35, lon: 103.82 },
-        'Skopje': { lat: 42.00, lon: 21.43 },
-        'Sofia': { lat: 42.70, lon: 23.32 },
-        'Stockholm': { lat: 59.33, lon: 18.07 },
-        'Suva': { lat: -18.14, lon: 178.44 },
-        'Sydney': { lat: -33.87, lon: 151.21 },
-        'Taipei': { lat: 25.03, lon: 121.57 },
-        'Tallinn': { lat: 59.44, lon: 24.75 },
-        'Tashkent': { lat: 41.30, lon: 69.28 },
-        'Tbilisi': { lat: 41.72, lon: 44.79 },
-        'Tehran': { lat: 35.69, lon: 51.39 },
-        'Tel Aviv': { lat: 32.09, lon: 34.78 },
-        'The Hague': { lat: 52.07, lon: 4.30 },
-        'Tirana': { lat: 41.33, lon: 19.82 },
-        'Tokyo': { lat: 35.68, lon: 139.69 },
-        'Toronto': { lat: 43.65, lon: -79.38 },
-        'Toulouse': { lat: 43.60, lon: 1.44 },
-        'Tripoli': { lat: 32.90, lon: 13.19 },
-        'Tunis': { lat: 36.81, lon: 10.18 },
-        'Ulaanbaatar': { lat: 47.89, lon: 106.91 },
-        'Vancouver': { lat: 49.28, lon: -123.12 },
-        'Vatican City': { lat: 41.90, lon: 12.45 },
-        'Venice': { lat: 45.44, lon: 12.32 },
-        'Vienna': { lat: 48.21, lon: 16.37 },
-        'Vientiane': { lat: 17.97, lon: 102.63 },
-        'Vilnius': { lat: 54.69, lon: 25.28 },
-        'Warsaw': { lat: 52.23, lon: 21.01 },
-        'Washington DC': { lat: 38.91, lon: -77.04 },
-        'Wellington': { lat: -41.29, lon: 174.78 },
-        'Yangon': { lat: 16.87, lon: 96.19 },
-        'Yaounde': { lat: 3.87, lon: 11.52 },
-        'Yerevan': { lat: 40.18, lon: 44.51 },
-        'Zagreb': { lat: 45.81, lon: 15.98 },
-        'Zurich': { lat: 47.38, lon: 8.54 }
-    };
-
     const WEATHER_CODE_MAP = {
         0: '☀️ Clear',
         1: '🌤️ Mainly clear',
@@ -242,14 +67,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     /**
      * Fetches and displays the current weather for the configured city.
-     * Uses the geocoding API for custom cities not in the lookup table.
+     * Uses stored coordinates if available, otherwise geocodes the city name.
      *
      * @returns {void}
      */
     function updateWeather() {
-        var coords = CITY_COORDS[city];
-        if (coords) {
-            fetchWeatherForCoords(coords);
+        if (weatherLat && weatherLon) {
+            fetchWeatherForCoords(parseFloat(weatherLat), parseFloat(weatherLon));
         } else {
             geocodeAndFetchWeather(city);
         }
@@ -258,12 +82,23 @@ document.addEventListener('DOMContentLoaded', function() {
     /**
      * Fetches weather for known coordinates.
      *
-     * @param {Object} coords - { lat, lon }.
+     * @param {number} lat - Latitude.
+     * @param {number} lon - Longitude.
      * @returns {void}
      */
-    function fetchWeatherForCoords(coords) {
-        var url = 'https://api.open-meteo.com/v1/forecast?latitude=' + coords.lat + '&longitude=' + coords.lon + '&current_weather=true';
-        fetchWeather(url);
+    function fetchWeatherForCoords(lat, lon) {
+        var url = 'https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lon + '&current_weather=true';
+        fetch(url)
+            .then(function(response) { return response.json(); })
+            .then(function(weatherData) {
+                var weather = weatherData.current_weather;
+                var desc = weatherCodeToDescription(weather.weathercode);
+                weatherContainer.textContent = desc + ' ' + Math.round(weather.temperature) + '°C';
+            })
+            .catch(function(error) {
+                console.error('Error fetching weather:', error);
+                weatherContainer.textContent = '🌡️ ' + city;
+            });
     }
 
     /**
@@ -279,14 +114,14 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(function(data) {
                 if (data.results && data.results.length > 0) {
                     var result = data.results[0];
-                    fetchWeatherForCoords({ lat: result.latitude, lon: result.longitude });
+                    fetchWeatherForCoords(result.latitude, result.longitude);
                 } else {
-                    weatherContainer.textContent = '🌡️ ' + cityName;
+                    weatherContainer.textContent = city + ' not found';
                 }
             })
             .catch(function(error) {
                 console.error('Error geocoding city:', error);
-                weatherContainer.textContent = '🌡️ ' + cityName;
+                weatherContainer.textContent = city + ' not found';
             });
     }
 
@@ -314,6 +149,18 @@ document.addEventListener('DOMContentLoaded', function() {
     // Settings
     // ========================================================================
     settingsButton.addEventListener('click', openSettings);
+    sidebarToggleButton.addEventListener('click', toggleSidebar);
+
+    /**
+     * Toggles the sidebar visibility.
+     *
+     * @returns {void}
+     */
+    function toggleSidebar() {
+        isSidebarVisible = !isSidebarVisible;
+        browser.storage.local.set({ hideSidebar: !isSidebarVisible });
+        applySidebarVisibility(!isSidebarVisible);
+    }
 
     /**
      * Opens the extension's options/settings page.
@@ -358,7 +205,7 @@ document.addEventListener('DOMContentLoaded', function() {
      * @returns {Promise<void>}
      */
     function getSettings() {
-        return browser.storage.local.get(['rootFolder', 'timezone', 'hideSidebar', 'city'])
+        return browser.storage.local.get(['rootFolder', 'timezone', 'city', 'hideSidebar', 'weatherLat', 'weatherLon'])
             .then(applySettings)
             .catch(handleSettingsError);
     }
@@ -373,7 +220,10 @@ document.addEventListener('DOMContentLoaded', function() {
         rootFolder = parseString(result.rootFolder, DEFAULT_ROOT_FOLDER);
         timezone = parseString(result.timezone, DEFAULT_TIMEZONE);
         city = parseString(result.city, DEFAULT_CITY);
-        applySidebarVisibility(!!result.hideSidebar);
+        weatherLat = result.weatherLat || '';
+        weatherLon = result.weatherLon || '';
+        isSidebarVisible = !result.hideSidebar;
+        applySidebarVisibility(result.hideSidebar || false);
     }
 
     /**
@@ -384,6 +234,14 @@ document.addEventListener('DOMContentLoaded', function() {
      */
     function applySidebarVisibility(hideSidebar) {
         folderTree.style.display = hideSidebar ? 'none' : '';
+        isSidebarVisible = !hideSidebar;
+        var icon = isSidebarVisible ? '✕' : '☰';
+        sidebarToggleButton.className = isSidebarVisible ? 'hide' : 'show';
+        sidebarToggleButton.innerHTML = '<span>' + icon + '</span>';
+        sidebarToggleButton.title = isSidebarVisible ? 'Hide sidebar' : 'Show sidebar';
+        if (currentFolder) {
+            showBookmarksForFolder(currentFolder, currentPathStack);
+        }
     }
 
     /**
@@ -646,11 +504,21 @@ document.addEventListener('DOMContentLoaded', function() {
      * Creates a complete bookmark item with favicon, title, and action menu.
      *
      * @param {Object} bookmarkItem - The bookmark with url, title, id.
+     * @param {string} parentFolderId - The ID of the parent folder (for reordering).
      * @returns {HTMLDivElement} The bookmark element.
      */
-    function createBookmarkItem(bookmarkItem) {
+    function createBookmarkItem(bookmarkItem, parentFolderId) {
         var item = document.createElement('div');
         item.className = 'bookmark-item';
+        item.draggable = true;
+        item.dataset.bookmarkId = bookmarkItem.id;
+
+        item.addEventListener('dragstart', handleDragStart);
+        item.addEventListener('dragend', handleDragEnd);
+        item.addEventListener('dragover', handleDragOver);
+        item.addEventListener('dragenter', handleDragEnter);
+        item.addEventListener('dragleave', handleDragLeave);
+        item.addEventListener('drop', handleDrop);
 
         var link = document.createElement('a');
         link.href = bookmarkItem.url;
@@ -670,6 +538,124 @@ document.addEventListener('DOMContentLoaded', function() {
         item.appendChild(createBookmarkMenu(bookmarkItem, titleSpan, link, item, favicon));
 
         return item;
+    }
+
+    // ========================================================================
+    // Drag and Drop
+    // ========================================================================
+
+    var draggedBookmarkId = null;
+
+    /**
+     * Handles the drag start event.
+     *
+     * @param {DragEvent} e
+     * @returns {void}
+     */
+    function handleDragStart(e) {
+        draggedBookmarkId = this.dataset.bookmarkId;
+        this.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', draggedBookmarkId);
+    }
+
+    /**
+     * Handles the drag end event.
+     *
+     * @returns {void}
+     */
+    function handleDragEnd() {
+        this.classList.remove('dragging');
+        draggedBookmarkId = null;
+        document.querySelectorAll('.bookmark-item.drag-over').forEach(function(el) {
+            el.classList.remove('drag-over');
+        });
+    }
+
+    /**
+     * Handles the drag over event (required to allow drop).
+     *
+     * @param {DragEvent} e
+     * @returns {void}
+     */
+    function handleDragOver(e) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+    }
+
+    /**
+     * Handles the drag enter event.
+     *
+     * @returns {void}
+     */
+    function handleDragEnter(e) {
+        e.preventDefault();
+        if (this.dataset.bookmarkId !== draggedBookmarkId) {
+            this.classList.add('drag-over');
+        }
+    }
+
+    /**
+     * Handles the drag leave event.
+     *
+     * @returns {void}
+     */
+    function handleDragLeave() {
+        this.classList.remove('drag-over');
+    }
+
+    /**
+     * Handles the drop event to reorder bookmarks.
+     *
+     * @param {DragEvent} e
+     * @returns {void}
+     */
+    function handleDrop(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        this.classList.remove('drag-over');
+
+        var targetBookmarkId = this.dataset.bookmarkId;
+        if (!draggedBookmarkId || !targetBookmarkId || draggedBookmarkId === targetBookmarkId) {
+            return;
+        }
+
+        reorderBookmark(draggedBookmarkId, targetBookmarkId);
+    }
+
+    /**
+     * Moves a bookmark before/after another within the same folder.
+     *
+     * @param {string} draggedId - The ID of the dragged bookmark.
+     * @param {string} targetId - The ID of the target bookmark.
+     * @returns {void}
+     */
+    function reorderBookmark(draggedId, targetId) {
+        // Get all bookmarks in the current folder to compute new index
+        var grid = bookmarksContainer.querySelector('.bookmark-grid');
+        if (!grid) return;
+
+        var items = Array.from(grid.querySelectorAll('.bookmark-item'));
+        var draggedIdx = items.findIndex(function(el) { return el.dataset.bookmarkId === draggedId; });
+        var targetIdx = items.findIndex(function(el) { return el.dataset.bookmarkId === targetId; });
+
+        if (draggedIdx === -1 || targetIdx === -1) return;
+
+        // Use the bookmarks.move API: move dragged bookmark to the target index
+        // Firefox bookmarks API: browser.bookmarks.move(id, { index: newIndex })
+        // We move to targetIdx so dragged bookmark ends up at that position
+        browser.bookmarks.move(draggedId, { index: targetIdx }).then(function() {
+            // Re-render to reflect the new order
+            if (currentFolder) {
+                browser.bookmarks.getSubTree(currentFolder.id).then(function(nodes) {
+                    if (nodes.length > 0) {
+                        showBookmarksForFolder(nodes[0], currentPathStack);
+                    }
+                });
+            }
+        }).catch(function(err) {
+            console.error('Error reordering bookmark:', err);
+        });
     }
 
     /**
@@ -814,23 +800,27 @@ document.addEventListener('DOMContentLoaded', function() {
      * @returns {void}
      */
     function showBookmarksForFolder(folderItem, pathStack) {
-        bookmarksContainer.innerHTML = '';
-
+        currentFolder = folderItem;
         if (!pathStack) {
             pathStack = buildPathStack(folderItem);
         }
+        currentPathStack = pathStack;
 
-        renderBreadcrumb(pathStack);
+        bookmarksContainer.innerHTML = '';
+
+        if (!isSidebarVisible) {
+            renderBreadcrumb(pathStack);
+        }
 
         var grid = document.createElement('div');
         grid.className = 'bookmark-grid';
         bookmarksContainer.appendChild(grid);
 
         var bookmarks = folderItem.children ? folderItem.children.filter(function(c) { return c.url; }) : [];
-        bookmarks.forEach(function(bm) { grid.appendChild(createBookmarkItem(bm)); });
+        bookmarks.forEach(function(bm) { grid.appendChild(createBookmarkItem(bm, folderItem.id)); });
 
         var subFolders = folderItem.children ? folderItem.children.filter(function(c) { return !c.url; }) : [];
-        if (subFolders.length > 0) {
+        if (!isSidebarVisible && subFolders.length > 0) {
             var subFolderContainer = document.createElement('div');
             subFolderContainer.className = 'sub-folder-row';
             bookmarksContainer.appendChild(subFolderContainer);
